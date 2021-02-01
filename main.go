@@ -10,15 +10,16 @@ import (
 	"log"
 	"net/http"
 	"os"
-
-	"github.com/joho/godotenv"
+	// "github.com/joho/godotenv" // FOR DEVELOPMENT PURPOSES
 )
 
 func main() {
-	err := godotenv.Load(".env")
-	if err != nil {
-		log.Fatalf("Error loading .env file")
-	}
+	// FOR DEVELOPMENT PURPOSES
+	// err := godotenv.Load(".env")
+	// if err != nil {
+	// 	log.Fatalf("Error loading .env file")
+	// }
+
 	// Create a new router
 	router := router.Router()
 
