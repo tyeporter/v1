@@ -25,6 +25,9 @@ github.com/golang/snappy
 github.com/gorilla/mux
 # github.com/jmespath/go-jmespath v0.4.0
 github.com/jmespath/go-jmespath
+# github.com/joho/godotenv v1.3.0
+## explicit
+github.com/joho/godotenv
 # github.com/klauspost/compress v1.9.5
 github.com/klauspost/compress/fse
 github.com/klauspost/compress/huff0
