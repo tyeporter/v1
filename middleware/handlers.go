@@ -10,6 +10,7 @@ import (
 	"backend/models"
 	"context"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -31,12 +32,12 @@ var connectionString string
 // The name of the database we're connecting to
 var databaseName string
 
-// createConnection should be called early in our middleware 
+// createConnection should be called early in our middleware
 // handler functions that rely on a connection to the MongoDB client
 func createConnection() *mongo.Client {
 	// Set the connection string and database name
-	connectionString = "mongodb://localhost:27017"
 	databaseName = "tyeporter-dev"
+	connectionString = fmt.Sprintf("mongodb+srv://admin:%s@tyeporter-dev.x3hge.mongodb.net/%s?retryWrites=true&w=majority", os.Getenv("PASSWORD"), databaseName)
 
 	// Define 10 second timeout for MongoDB - GO connection
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
@@ -96,32 +97,32 @@ type SPAHandler struct {
 // file located at the index path on the SPA handler will be served. This
 // is suitable behavior for serving an SPA (single page application).
 func (h SPAHandler) ServeHTTP(res http.ResponseWriter, req *http.Request) {
-    // get the absolute path to prevent directory traversal
+	// get the absolute path to prevent directory traversal
 	path, err := filepath.Abs(req.URL.Path)
 	if err != nil {
-        // if we failed to get the absolute path respond with a 400 bad request
-        // and stop
+		// if we failed to get the absolute path respond with a 400 bad request
+		// and stop
 		http.Error(res, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-    // prepend the path with the path to the static directory
+	// prepend the path with the path to the static directory
 	path = filepath.Join(h.StaticPath, path)
 
-    // check whether a file exists at the given path
+	// check whether a file exists at the given path
 	_, err = os.Stat(path)
 	if os.IsNotExist(err) {
 		// file does not exist, serve index.html
 		http.ServeFile(res, req, filepath.Join(h.StaticPath, h.IndexPath))
 		return
 	} else if err != nil {
-        // if we got an error (that wasn't that the file doesn't exist) stating the
-        // file, return a 500 internal server error and stop
+		// if we got an error (that wasn't that the file doesn't exist) stating the
+		// file, return a 500 internal server error and stop
 		http.Error(res, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-    // otherwise, use http.FileServer to serve the static dir
+	// otherwise, use http.FileServer to serve the static dir
 	http.FileServer(http.Dir(h.StaticPath)).ServeHTTP(res, req)
 }
 
@@ -143,7 +144,7 @@ func GetArticle(res http.ResponseWriter, req *http.Request) {
 	// Create an empty Article
 	var article models.Article
 
-	withDB(func (db *mongo.Database, ctx context.Context) {
+	withDB(func(db *mongo.Database, ctx context.Context) {
 		// Retrieve the articles collection from database
 		collection := db.Collection("articles")
 
@@ -177,7 +178,7 @@ func LikeArticle(res http.ResponseWriter, req *http.Request) {
 	// Create an empty Article
 	var article models.Article
 
-	withDB(func (db *mongo.Database, ctx context.Context){
+	withDB(func(db *mongo.Database, ctx context.Context) {
 		// Retrieve the articles collection from database
 		collection := db.Collection("articles")
 
@@ -211,5 +212,5 @@ func LikeArticle(res http.ResponseWriter, req *http.Request) {
 			log.Fatal("Unable to encode response")
 		}
 	})
-	
+
 }
