@@ -83,7 +83,7 @@ func withDB(operations func(*mongo.Database, context.Context)) {
 
 // --------------- SPA FUNCTIONS --------------------
 
-// spaHandler implements the http.Handler interface, so we can use it
+// SPAHandler implements the http.Handler interface, so we can use it
 // to respond to HTTP requests. The path to the static directory and
 // path to the index file within that static directory are used to
 // serve the SPA in the given static directory.
@@ -164,6 +164,8 @@ func GetArticle(res http.ResponseWriter, req *http.Request) {
 	})
 }
 
+// LikeArticle corresponds to the "/api/articles/{name}/like" endpoint.
+// It increments the like field on a single record in the database.
 func LikeArticle(res http.ResponseWriter, req *http.Request) {
 	// Set header values
 	res.Header().Add("Content-Type", "application/json")
